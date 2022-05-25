@@ -1,0 +1,9 @@
+---
+nebula_version: "v1.5.2"
+nebula_architecture: "amd64"
+nebula_lighthouse_port: 4242
+
+## Non defined variables
+# nebula_hostname
+# nebula_host_ip
+# nebula_lighthouse: false

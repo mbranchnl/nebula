@@ -1,0 +1,5 @@
+---
+include:
+  - project: automation-development/ci-includes
+    ref: master
+    file: ansible-role-lint.yml

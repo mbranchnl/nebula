@@ -1,0 +1,15 @@
+all:
+  hosts:
+    mbranch.nl:
+      ansible_user: marijn
+      nebula_lighthouse: true
+      nebula_hostname: lighthouse01
+      nebula_host_ip: 10.10.10.1
+    bastion.local:
+      ansible_user: root
+      nebula_hostname: bastion
+      nebula_host_ip: 10.10.10.2
+    backup.local:
+      ansible_user: root
+      nebula_hostname: rome
+      nebula_host_ip: 10.10.10.3

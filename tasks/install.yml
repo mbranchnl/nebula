@@ -1,0 +1,10 @@
+---
+- name: "Download Nebula {{ nebula_version }}"
+  ansible.builtin.get_url:
+    url: "https://github.com/slackhq/nebula/releases/download/{{ nebula_version }}/nebula-linux-{{ nebula_architecture }}.tar.gz"
+    dest: /usr/local/bin/
+
+- name: "Extract Nebula {{ nebula_version }}"
+  ansible.builtin.unarchive:
+    src: "/usr/local/bin/nebula-linux-{{ nebula_architecture }}.tar.gz"
+    dest: /usr/local/bin/
