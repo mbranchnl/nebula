@@ -1,0 +1,12 @@
+---
+- name: Nebula configuration check
+  ansible.builtin.command: "/usr/local/bin/nebula -test -config /etc/nebula/config.yml"
+  register: result
+  changed_when: result.rc != 0
+  check_mode: false
+
+- name: Restart Nebula
+  ansible.builtin.service:
+    name: nebula
+    state: restarted
+    enabled: true
