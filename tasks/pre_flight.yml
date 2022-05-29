@@ -1,0 +1,15 @@
+---
+- name: Task name
+  ansible.builtin.stat:
+    path: /usr/local/bin/nebula
+  register: register_name
+
+- name: Assert that Nebula is installed
+  ansible.builtin.assert:
+    that:
+      - register_name.stat.exists
+
+- name: Gather version
+  ansible.builtin.shell: "/usr/local/bin/nebula -version | awk '/Version:/ {print $2}'"
+  changed_when: false
+  register: nebula_installed_version
