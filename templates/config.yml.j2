@@ -9,32 +9,16 @@ pki:
 
 # The static host map defines a set of hosts with fixed IP addresses on the internet (or any network).
 # A host can have multiple fixed IP addresses defined here, and nebula will try each when establishing a tunnel.
-
 static_host_map:
-{% if nebula_lighthouse is true %}
-  "192.168.100.1": ["100.64.22.11:{{ nebula_lighthouse_port }}"]
-{% endif %}
+  "{{ hostvars[nebula_lighthouse_hostname].nebula_host_ip }}": ["{{ hostvars[nebula_lighthouse_hostname].ansible_default_ipv4.address }}:{{ nebula_lighthouse_port }}"]
 
 lighthouse:
-  # am_lighthouse is used to enable lighthouse functionality for a node. This should ONLY be true on nodes
-  # you have configured to be lighthouses in your network
   am_lighthouse: {{ nebula_lighthouse | default(false) }}
-  # serve_dns optionally starts a dns listener that responds to various queries and can even be
-  # delegated to for resolution
-  #serve_dns: false
-  #dns:
-    # The DNS host defines the IP to bind the dns listener to. This also allows binding to the nebula node IP.
-    #host: 0.0.0.0
-    #port: 53
-  # interval is the number of seconds between updates from this node to a lighthouse.
-  # during updates, a node sends information about its current IP addresses to each node.
   interval: 60
-  # hosts is a list of lighthouse hosts this node should report to and query from
-  # IMPORTANT: THIS SHOULD BE EMPTY ON LIGHTHOUSE NODES
-  # IMPORTANT2: THIS SHOULD BE LIGHTHOUSES' NEBULA IPs, NOT LIGHTHOUSES' REAL ROUTABLE IPs
+{% if nebula_lighthouse != true %}
   hosts:
-#    - "192.168.100.1"
-
+    - "{{ hostvars[nebula_lighthouse_hostname].nebula_host_ip }}"
+{% endif %}
 
 {% if nebula_lighthouse is true %}
 listen:
@@ -93,20 +77,15 @@ firewall:
     max_connections: 100000
 
   outbound:
-    # Allow all outbound traffic from this node
-    - port: any
-      proto: any
-      host: any
-
+{% for item in nebula_firewall_outbound_policies %}
+    - port: {{item.port}}
+      proto: {{item.proto}}
+      host: {{item.host }}
+{% endfor %}
+  
   inbound:
-    # Allow icmp between any nebula hosts
-    - port: any
-      proto: any
-      host: any
-
-    # Allow tcp/443 from any host with BOTH laptop and home group
-#    - port: 443
-#      proto: tcp
-#      groups:
-#        - laptop
-#        - home
+{% for item in nebula_firewall_inbound_policies %}
+    - port: {{item.port}}
+      proto: {{item.proto}}
+      host: {{item.host }}
+{% endfor %}

@@ -1,11 +1,25 @@
 ---
+- name: set fact
+  set_fact:
+    nebula_lighthouse_hostname: "{{ inventory_hostname }}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+  run_once: true
+  when: nebula_lighthouse is true
+
 - name: Place nebula config
   ansible.builtin.template:
     src: config.yml.j2
     dest: /etc/nebula/config.yml
     mode: '0644'
 
-# gather hostname van host welke lighthouse is 
-
 # get extern ip van lighthouse
+# - name: debug
+#   debug: 
+#     msg: "{{ hostvars[nebula_lighthouse_hostname].ansible_default_ipv4.address }}"
+#   vars:
+#     marijn: "{{ inventory_hostname }}"
+
+
+
 # get intern nebula ip van lighthouse

@@ -1,1 +1,12 @@
 ---
+nebula_lighthouse: false
+
+nebula_firewall_outbound_policies:
+  - port: any
+    proto: icmp
+    host: any
+
+nebula_firewall_inbound_policies:
+  - port: any
+    proto: icmp
+    host: any

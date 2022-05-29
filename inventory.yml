@@ -8,6 +8,7 @@ all:
       nebula_host_ip: 10.10.10.1
     bastion.local:
       ansible_user: marijn
+      # nebula_lighthouse: true
       ansible_become: true
       nebula_hostname: bastion
       nebula_host_ip: 10.10.10.2
