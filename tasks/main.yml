@@ -1,13 +1,14 @@
 ---
 # Download
-- name: Download and install Nebula
-  ansible.builtin.include_tasks: install.yml
+# - name: Download and install Nebula
+  # ansible.builtin.include_tasks: install.yml
+# 
+# - name: Install Nebula service
+  # ansible.builtin.include_tasks: service.yml
+# 
+# - name: Generate certificates
+  # ansible.builtin.include_tasks: generate.yml
+  # delegate_to: localhost
 
-- name: Install Nebula service
-  ansible.builtin.include_tasks: service.yml
-
-- name: Generate certificates
-  ansible.builtin.include_tasks: generate.yml
-  delegate_to: localhost
-
-# Host configuration
+- name: Configure Nebula
+  ansible.builtin.include_tasks: configure.yml
