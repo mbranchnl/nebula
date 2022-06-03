@@ -1,2 +1,19 @@
 ---
-# Check if ca already exists
+
+# zie postfix role
+#when: nebula_certificate_allow_store is true
+
+# Check if certificate-storage is allowed
+# if false then default to localhost - files/
+# use lighthouse-host as CA generator
+
+# Create CA: ./nebula-cert ca -name "Myorganization, Inc"
+# Generate cert: ./nebula-cert sign -name lighthouse01 -ip 10.99.0.1/24
+
+- name: Check if CA exists
+  when:
+    
+
+- name: Generate CA if not existing
+  ansible.builtin.command: |
+    /usr/local/bin/nebula-cert sign -name "{{ nebula_ca_name }}"

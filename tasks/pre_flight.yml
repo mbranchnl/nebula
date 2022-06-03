@@ -1,5 +1,10 @@
 ---
-- name: Task name
+- name: Check for Nebula-binary
+  ansible.builtin.stat:
+    path: "{{ nebula_certificate_location }}/ca.crt"
+  register: register_name
+
+- name: Check for Nebula CA
   ansible.builtin.stat:
     path: /usr/local/bin/nebula
   register: register_name

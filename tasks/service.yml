@@ -8,4 +8,4 @@
 - name: Enable Nebula service
   ansible.builtin.service:
     name: nebula
-    enabled: yes
+    enabled: yesw

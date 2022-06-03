@@ -1,5 +1,7 @@
 ---
 nebula_lighthouse: false
+nebula_certificate_allow_store: false
+nebula_certificate_location: /etc/nebula
 
 nebula_firewall_outbound_policies:
   - port: any

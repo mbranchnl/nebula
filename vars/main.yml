@@ -3,6 +3,7 @@ nebula_version: "1.5.2"
 nebula_architecture: "amd64"
 nebula_lighthouse_port: 4242
 
+nebula_ca_name: "M.-branch"
 ## Non defined variables
 # nebula_hostname
 # nebula_host_ip
