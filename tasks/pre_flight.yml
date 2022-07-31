@@ -1,18 +1,13 @@
 ---
-- name: Check for Nebula-binary
-  ansible.builtin.stat:
-    path: "{{ nebula_certificate_location }}/ca.crt"
-  register: register_name
-
 - name: Check for Nebula CA
   ansible.builtin.stat:
-    path: /usr/local/bin/nebula
-  register: register_name
+    path: "{{ nebula_certificate_location }}/ca.crt"
+  register: nebula_ca_availability
 
-- name: Assert that Nebula is installed
-  ansible.builtin.assert:
-    that:
-      - register_name.stat.exists
+- name: Check for Nebula-binary
+  ansible.builtin.stat:
+    path: /usr/local/bin/nebula
+  register: nebula_bin_availability
 
 - name: Gather version
   ansible.builtin.shell: "/usr/local/bin/nebula -version | awk '/Version:/ {print $2}'"
