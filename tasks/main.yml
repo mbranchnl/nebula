@@ -2,15 +2,18 @@
 - name: Pre-flight checks
   ansible.builtin.include_tasks: pre_flight.yml
 
-# - name: Download and install Nebula
-#   ansible.builtin.include_tasks: install.yml
-#   when: nebula_installed_version.stdout is version (nebula_version, '>')
+- name: Download and install Nebula
+  ansible.builtin.include_tasks: install.yml
+  when: 
+    (nebula_bin_version.stdout is version (nebula_version, '>')) or
+    (nebula_bin_availability.stat.exists is false)
 
 # - name: Install Nebula service
 #   ansible.builtin.include_tasks: service.yml
 
-- name: Generate certificates
-  ansible.builtin.include_tasks: generate.yml
+# - name: Generate certificates
+#   ansible.builtin.include_tasks: generate.yml
+#   when: nebula_certificate_generate
 
 # - name: Configure Nebula
 #   ansible.builtin.include_tasks: configure.yml
