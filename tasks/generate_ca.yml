@@ -1,0 +1,10 @@
+---
+- name: Generate CA if not existing
+  ansible.builtin.command: |
+    /usr/local/bin/nebula-cert ca -name "{{ nebula_ca_name }}"
+  args:
+    chdir: "{{ nebula_certificate_location }}"
+  when: nebula_ca_availability.stat.exists is false
+
+# - name: Re-gather facts
+#   ansible.builtin.setup:

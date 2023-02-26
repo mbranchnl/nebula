@@ -5,7 +5,7 @@
   changed_when: result.rc != 0
   check_mode: false
 
-- name: Restart Nebula
+- name: Restart service
   ansible.builtin.service:
     name: nebula
     state: restarted

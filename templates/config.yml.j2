@@ -3,9 +3,9 @@
 
 pki:
   # The CAs that are accepted by this node. Must contain one or more certificates created by 'nebula-cert ca'
-  ca: /etc/nebula/ca.crt
-  cert: /etc/nebula/{{ nebula_hostname }}.crt
-  key: /etc/nebula/{{ nebula_hostname }}.key
+  ca: {{ nebula_certificate_location }}/ca.crt
+  cert: {{ nebula_certificate_location }}/{{ nebula_hostname }}.crt
+  key: {{ nebula_certificate_location }}/{{ nebula_hostname }}.key
 
 # The static host map defines a set of hosts with fixed IP addresses on the internet (or any network).
 # A host can have multiple fixed IP addresses defined here, and nebula will try each when establishing a tunnel.
