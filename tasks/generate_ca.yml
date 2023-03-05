@@ -1,10 +1,20 @@
 ---
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ nebula_certificate_location }}"
+    state: directory
+    mode: '0755'
+
+- name: show all the hosts matching the pattern
+  debug:
+    msg: "{{ item }}"
+  with_inventory_hostnames:
+    - bastion
+  delegate_to: localhost
+
 - name: Generate CA if not existing
   ansible.builtin.command: |
     /usr/local/bin/nebula-cert ca -name "{{ nebula_ca_name }}"
   args:
     chdir: "{{ nebula_certificate_location }}"
   when: nebula_ca_availability.stat.exists is false
-
-# - name: Re-gather facts
-#   ansible.builtin.setup:
