@@ -2,6 +2,7 @@
 
 ## Additional commands
 
+Show details inside nebula-certificate
 ```shell
 nebula-cert print -json -path ca.crt | jq .details
 ```
@@ -13,4 +14,4 @@ nebula-cert print -json -path ca.crt | jq .details
 ## Todo
 
 - [ ] Logging
-- [ ] Logrotation of loggin
+- [ ] Logrotation of logging
