@@ -4,15 +4,22 @@
     path: /usr/local/bin/nebula
   register: nebula_bin_availability
 
+- name: Gather version
+  block:
+    - name: Gather Nebula-binary version
+      ansible.builtin.shell: "/usr/local/bin/nebula -version | awk '/Version:/ {print $2}'"
+      changed_when: false
+      register: nebula_bin_version
+
+    - name: Setting host facts using complex arguments
+      ansible.builtin.set_fact:
+        nebula_current_version: "{{ nebula_bin_version.stdout }}"
+  when: nebula_bin_availability.stat.exists is true
+
 - name: Check for Nebula CA
   ansible.builtin.stat:
     path: "{{ nebula_certificate_location }}/ca.crt"
   register: nebula_ca_availability
-
-- name: Gather version
-  ansible.builtin.shell: "/usr/local/bin/nebula -version | awk '/Version:/ {print $2}'"
-  changed_when: false
-  register: nebula_bin_version
 
 - name: Gather CA-host
   ansible.builtin.set_fact:
