@@ -18,6 +18,15 @@
     chdir: "{{ nebula_certificate_location }}"
   when: nebula_host_cert.stat.exists is false
 
+- name: Generate CA if not existing
+  ansible.builtin.command: |
+    /usr/local/bin/nebula-cert sign -name "{{ ansible_hostname }}" -ip "{{ nebula_ip }}/24" -subnets "{{ nebula_extra_subnet }}/24"
+  args:
+    chdir: "{{ nebula_certificate_location }}"
+  when: 
+    - nebula_host_cert.stat.exists is false
+    - nebula_extra_subnet is defined
+
 - name: Remove ca.key after certificate generation
   ansible.builtin.file:
     path: "{{ nebula_certificate_location }}/ca.key"
