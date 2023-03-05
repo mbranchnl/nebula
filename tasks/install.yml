@@ -3,6 +3,7 @@
   ansible.builtin.get_url:
     url: "https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/nebula-linux-{{ nebula_architecture }}.tar.gz"
     dest: /usr/local/bin/nebula-installer.tar.gz
+    mode: 0755
 
 - name: "Extract Nebula {{ nebula_version }}"
   ansible.builtin.unarchive:
@@ -12,5 +13,5 @@
 
 - name: Cleanup installer
   ansible.builtin.file:
-    path: /usr/local/bin/nebula-linux-{{ nebula_architecture }}.tar.gz
-    state: absent 
+    path: /usr/local/bin/nebula-installer.tar.gz
+    state: absent
