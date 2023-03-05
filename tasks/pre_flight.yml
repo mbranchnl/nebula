@@ -15,14 +15,3 @@
       ansible.builtin.set_fact:
         nebula_current_version: "{{ nebula_bin_version.stdout }}"
   when: nebula_bin_availability.stat.exists is true
-
-- name: Check for Nebula CA
-  ansible.builtin.stat:
-    path: "{{ nebula_certificate_location }}/ca.crt"
-  register: nebula_ca_availability
-
-- name: Gather CA-host
-  ansible.builtin.set_fact:
-    nebula_ca_hostname: "{{ inventory_hostname }}"
-  run_once: true
-  when: nebula_ca_host

@@ -15,3 +15,15 @@
   ansible.builtin.file:
     path: /usr/local/bin/nebula-installer.tar.gz
     state: absent
+
+- name: Create nebula log dir
+  ansible.builtin.file:
+    path: "/var/log/nebula"
+    state: directory
+    mode: '0755'
+
+- name: Copy ca.crt to host
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/ca.crt"
+    dest: /etc/nebula/certs
+    mode: '0644'

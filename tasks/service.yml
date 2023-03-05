@@ -9,4 +9,4 @@
   ansible.builtin.service:
     name: nebula
     enabled: true
-  notify: restart nebula
+  # notify: restart nebula

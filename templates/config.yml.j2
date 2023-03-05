@@ -1,61 +1,42 @@
-# This is the nebula example configuration file. You must edit, at a minimum, the static_host_map, lighthouse, and firewall sections
-# Some options in this file are HUPable, including the pki section. (A HUP will reload credentials from disk without affecting existing tunnels)
+# This is the nebula configuration file.
+# example configuration can be found at: https://github.com/slackhq/nebula/blob/master/examples/config.yml
 
 pki:
   # The CAs that are accepted by this node. Must contain one or more certificates created by 'nebula-cert ca'
   ca: {{ nebula_certificate_location }}/ca.crt
-  cert: {{ nebula_certificate_location }}/{{ nebula_hostname }}.crt
-  key: {{ nebula_certificate_location }}/{{ nebula_hostname }}.key
+  cert: {{ nebula_certificate_location }}/{{ ansible_hostname }}.crt
+  key: {{ nebula_certificate_location }}/{{ ansible_hostname }}.key
 
 # The static host map defines a set of hosts with fixed IP addresses on the internet (or any network).
 # A host can have multiple fixed IP addresses defined here, and nebula will try each when establishing a tunnel.
+{% if nebula_lighthouse is false %}
 static_host_map:
-  "{{ hostvars[nebula_lighthouse_hostname].nebula_host_ip }}": ["{{ hostvars[nebula_lighthouse_hostname].ansible_default_ipv4.address }}:{{ nebula_lighthouse_port }}"]
+  "{{ hostvars[groups['lighthouse'][0]].nebula_ip }}": ["{{ hostvars[groups['lighthouse'][0]].ansible_default_ipv4.address }}:{{ nebula_lighthouse_port }}"]
+{% endif %}
 
 lighthouse:
-  am_lighthouse: {{ nebula_lighthouse | default(false) }}
+  am_lighthouse: {{ nebula_lighthouse | lower }}
   interval: 60
-{% if nebula_lighthouse != true %}
+{% if nebula_lighthouse is false %}
   hosts:
-    - "{{ hostvars[nebula_lighthouse_hostname].nebula_host_ip }}"
+    - "{{ hostvars[groups['lighthouse'][0]].nebula_ip }}"
 {% endif %}
 
-{% if nebula_lighthouse is true %}
 listen:
-  # To listen on both any ipv4 and ipv6 use "[::]"
-  host: 0.0.0.0
+  host: '[::]'
   port: {{ nebula_lighthouse_port }}
-{% endif %}
 
 punchy:
-  # Continues to punch inbound/outbound at a regular interval to avoid expiration of firewall nat mappings
   punch: true
 
 # Configure the private interface. Note: addr is baked into the nebula certificate
 tun:
-  # When tun is disabled, a lighthouse can be started without a local tun interface (and therefore without root)
   disabled: false
-  # Name of the device. If not set, a default will be chosen by the OS.
-  # For macOS: if set, must be in the form `utun[0-9]+`.
-  # For FreeBSD: Required to be set, must be in the form `tun[0-9]+`.
   dev: nebula1
-  # Toggles forwarding of local broadcast packets, the address of which depends on the ip/mask encoded in pki.cert
   drop_local_broadcast: false
-  # Toggles forwarding of multicast packets
   drop_multicast: false
-  # Sets the transmit queue length, if you notice lots of transmit drops on the tun it may help to raise this number. Default is 500
   tx_queue: 500
-  # Default MTU for every packet, safe setting is (and the default) 1300 for internet based traffic
   mtu: 1300
-  # Route based MTU overrides, you have known vpn ip paths that can support larger MTUs you can increase/decrease them here
-  routes:
-    #- mtu: 8800
-    #  route: 10.0.0.0/16
-  # Unsafe routes allows you to route traffic over nebula to non-nebula nodes
-  # Unsafe routes should be avoided unless you have hosts/services that cannot run nebula
-  # NOTE: The nebula certificate of the "via" node *MUST* have the "route" defined as a subnet in its certificate
-  # `mtu` will default to tun mtu if this option is not specified
-  # `metric` will default to 0 if this option is not specified
   unsafe_routes:
     #- route: 172.16.1.0/24
     #  via: 192.168.100.99
@@ -63,9 +44,7 @@ tun:
     #  metric: 100
 
 logging:
-  # panic, fatal, error, warning, info, or debug. Default is info
   level: info
-  # json or text formats currently available. Default is text
   format: text
 
 # Nebula security group configuration

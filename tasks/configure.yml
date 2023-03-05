@@ -1,11 +1,8 @@
 ---
-- name: Set lighthouse based on configured lighthouse-host
+- name: set fact
   ansible.builtin.set_fact:
-    nebula_lighthouse_hostname: "{{ inventory_hostname }}"
-  delegate_to: "{{ item }}"
-  loop: "{{ groups['all'] }}"
-  run_once: true
-  when: nebula_lighthouse is true
+    nebula_lighthouse: true
+  when: inventory_hostname in groups["lighthouse"]
 
 - name: Place nebula config
   ansible.builtin.template:

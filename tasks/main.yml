@@ -4,19 +4,14 @@
 
 - name: Download and install Nebula
   ansible.builtin.include_tasks: install.yml
-  when:
-    (nebula_bin_version.stdout is version (nebula_version, '>')) or
-    (nebula_bin_availability.stat.exists is false)
+  # when: (nebula_version is version(nebula_current_version, '>')) or
+  #       (nebula_bin_availability.stat.exists is false)
 
-- name: Generate CA-certificate
-  ansible.builtin.include_tasks: generate_ca.yml
-  when: nebula_ca_host
+- name: Install Nebula systemctl-service
+  ansible.builtin.include_tasks: service.yml
 
-# - name: Generate host-certificate
-#   ansible.builtin.include_tasks: generate_hosts.yml
+- name: Generate certificate
+  ansible.builtin.include_tasks: generate_cert.yml
 
-# - name: Install Nebula systemctl-service
-#   ansible.builtin.include_tasks: service.yml
-
-# - name: Configure Nebula
-#   ansible.builtin.include_tasks: configure.yml
+- name: Configure Nebula
+  ansible.builtin.include_tasks: configure.yml
