@@ -1,0 +1,24 @@
+---
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+
+#sudo iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -d 192.168.86.0/24 -j MASQUERADE
+- name: test
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    source: "192.168.100.0/24"
+    destination: "{{ nebula_extra_subnet }}/24"
+    jump: MASQUERADE
+
+#sudo iptables -I FORWARD 1 -s 192.168.100.0/24 -d 192.168.86.0/24 -j ACCEPT
+- name: Match on IP ranges
+  ansible.builtin.iptables:
+    chain: FORWARD
+    source: "192.168.100.0/24"
+    destination: "{{ nebula_extra_subnet }}/24"
+    jump: ACCEPT
+
+#sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT

@@ -4,14 +4,18 @@
 
 - name: Download and install Nebula
   ansible.builtin.include_tasks: install.yml
-  # when: (nebula_version is version(nebula_current_version, '>')) or
-  #       (nebula_bin_availability.stat.exists is false)
+  when: (nebula_version is version(nebula_current_version, '>')) or
+        (nebula_bin_availability.stat.exists is false)
 
 - name: Install Nebula systemctl-service
   ansible.builtin.include_tasks: service.yml
 
 - name: Generate certificate
   ansible.builtin.include_tasks: generate_cert.yml
+
+- name: Configure Additional subnets
+  ansible.builtin.include_tasks: additional_subnets.yml
+  when: nebula_extra_subnet is defined
 
 - name: Configure Nebula
   ansible.builtin.include_tasks: configure.yml
