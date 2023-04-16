@@ -7,15 +7,18 @@
   when: (nebula_version is version(nebula_current_version, '>')) or
         (nebula_bin_availability.stat.exists is false)
 
-- name: Install Nebula systemctl-service
-  ansible.builtin.include_tasks: service.yml
+- name: Generate CA certificate(s)
+  ansible.builtin.include_tasks: ca.yml
 
-- name: Generate certificate
-  ansible.builtin.include_tasks: generate_cert.yml
+- name: Generate certificate(s)
+  ansible.builtin.include_tasks: certificates.yml
 
 - name: Configure Additional subnets
-  ansible.builtin.include_tasks: additional_subnets.yml
-  when: nebula_extra_subnet is defined
+  ansible.builtin.include_tasks: unsafe_routes.yml
+  when: nebula_unsafe_routes is true
+
+- name: Install Nebula systemctl-service
+  ansible.builtin.include_tasks: service.yml
 
 - name: Configure Nebula
   ansible.builtin.include_tasks: configure.yml

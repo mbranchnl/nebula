@@ -1,0 +1,42 @@
+---
+- name: Fetch ca.key for runtime
+  ansible.builtin.fetch:
+    src: "{{ nebula_certificate_location }}/ca.key"
+    dest: "{{ role_path }}/files/"
+    flat: true
+  when:
+    - nebula_ca_host is true
+
+- name: Check for existing certificate
+  ansible.builtin.stat:
+    path: "{{ nebula_certificate_location }}/{{ ansible_hostname }}.crt"
+  register: nebula_check_ca_existence
+
+- name: Create certificate
+  block:
+    - name: Copy ca.key for certificate creation
+      ansible.builtin.copy:
+        src: "{{ role_path }}/files/ca.key"
+        dest: "{{ nebula_certificate_location }}/ca.key"
+        mode: 0644
+
+    - name: Create certificate
+      ansible.builtin.command: /usr/local/bin/nebula-cert sign -name "{{ ansible_hostname }}" -ip "{{ nebula_host_ip }}/24"
+      args:
+        chdir: "{{ nebula_certificate_location }}"
+      when: nebula_unsafe_routes is false
+
+    - name: Create certificate with additional subnets
+      ansible.builtin.command: /usr/local/bin/nebula-cert sign -name "{{ ansible_hostname }}" -ip "{{ nebula_host_ip }}/24"
+      args:
+        chdir: "{{ nebula_certificate_location }}"
+      when: nebula_unsafe_routes is true
+
+    - name: Remove ca.key
+      ansible.builtin.file:
+        path: "{{ nebula_certificate_location }}/ca.key"
+        state: absent
+      when:
+        - nebula_ca_host is false
+
+  when: nebula_check_ca_existence.stat.exists is false

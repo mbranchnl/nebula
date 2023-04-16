@@ -1,9 +1,4 @@
 ---
-- name: set fact
-  ansible.builtin.set_fact:
-    nebula_lighthouse: true
-  when: inventory_hostname in groups["lighthouse"]
-
 - name: Place nebula config
   ansible.builtin.template:
     src: config.yml.j2

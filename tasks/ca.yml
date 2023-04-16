@@ -1,0 +1,29 @@
+---
+- name: Check for existing CA-certificate
+  ansible.builtin.stat:
+    path: "{{ nebula_certificate_location }}/ca.crt"
+  register: nebula_host_cert
+
+- name: Generate CA if not existing
+  ansible.builtin.command: "{{ nebula_install_location }}/nebula-cert ca -name '{{ nebula_ca_name }}'"
+  args:
+    chdir: "{{ nebula_certificate_location }}"
+  when:
+    - nebula_host_cert.stat.exists is false
+    - nebula_ca_host is true
+
+- name: Fetch CA
+  ansible.builtin.fetch:
+    src: /etc/nebula/certs/ca.crt
+    dest: "{{ role_path }}/files/"
+    flat: true
+  when:
+    - nebula_ca_host is true
+
+- name: Copy ca.crt to all hosts
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/ca.crt"
+    dest: /etc/nebula/certs/ca.crt
+    mode: '0644'
+  when:
+    - nebula_ca_host is false

@@ -4,6 +4,11 @@
     path: /usr/local/bin/nebula
   register: nebula_bin_availability
 
+- name: Install prerequisites
+  ansible.builtin.package:
+    name: tar
+    state: present
+
 - name: Gather version
   block:
     - name: Gather Nebula-binary version
@@ -15,3 +20,9 @@
       ansible.builtin.set_fact:
         nebula_current_version: "{{ nebula_bin_version.stdout }}"
   when: nebula_bin_availability.stat.exists is true
+
+- name: Add machine with nebula_lighthouse defined to lighthouse group
+  ansible.builtin.add_host:
+    name: "{{ ansible_hostname }}"
+    groups: lighthouse
+  when: nebula_lighthouse is true

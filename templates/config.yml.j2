@@ -11,7 +11,7 @@ pki:
 # A host can have multiple fixed IP addresses defined here, and nebula will try each when establishing a tunnel.
 {% if nebula_lighthouse is false %}
 static_host_map:
-  "{{ hostvars[groups['lighthouse'][0]].nebula_ip }}": ["{{ hostvars[groups['lighthouse'][0]].ansible_default_ipv4.address }}:{{ nebula_lighthouse_port }}"]
+  "{{ hostvars[groups['lighthouse'][0]].nebula_host_ip }}": ["{{ hostvars[groups['lighthouse'][0]].ansible_default_ipv4.address }}:{{ nebula_lighthouse_port }}"]
 {% endif %}
 
 lighthouse:
@@ -19,7 +19,7 @@ lighthouse:
   interval: 60
 {% if nebula_lighthouse is false %}
   hosts:
-    - "{{ hostvars[groups['lighthouse'][0]].nebula_ip }}"
+    - "{{ hostvars[groups['lighthouse'][0]].nebula_host_ip }}"
 {% endif %}
 
 listen:
@@ -40,7 +40,7 @@ tun:
 {% if nebula_extra_subnet is defined %}
   unsafe_routes:
     - route: {{ nebula_extra_subnet }}/24
-      via: {{ nebula_ip }}
+      via: {{ nebula_host_ip }}
       mtu: 1300
       metric: 100
 {% endif %}

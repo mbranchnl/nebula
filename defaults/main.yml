@@ -1,7 +1,12 @@
 ---
+nebula_install_location: /usr/local/bin
 nebula_certificate_location: /etc/nebula/certs
 nebula_current_version: "0.0.0"
+
 nebula_lighthouse: false
+nebula_ca_host: false
+
+nebula_unsafe_routes: false
 
 nebula_firewall_outbound_policies:
   - port: any

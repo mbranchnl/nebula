@@ -2,28 +2,26 @@
 - name: "Download Nebula {{ nebula_version }}"
   ansible.builtin.get_url:
     url: "https://github.com/slackhq/nebula/releases/download/v{{ nebula_version }}/nebula-linux-{{ nebula_architecture }}.tar.gz"
-    dest: /usr/local/bin/nebula-installer.tar.gz
+    dest: "{{ nebula_install_location }}/nebula-installer.tar.gz"
     mode: 0755
 
 - name: "Extract Nebula {{ nebula_version }}"
   ansible.builtin.unarchive:
-    src: "/usr/local/bin/nebula-installer.tar.gz"
-    dest: /usr/local/bin/
+    src: "{{ nebula_install_location }}/nebula-installer.tar.gz"
+    dest: "{{ nebula_install_location }}"
     remote_src: true
 
 - name: Cleanup installer
   ansible.builtin.file:
-    path: /usr/local/bin/nebula-installer.tar.gz
+    path: "{{ nebula_install_location }}/nebula-installer.tar.gz"
     state: absent
 
-- name: Create nebula log dir
+- name: Create nebula dirs
   ansible.builtin.file:
-    path: "/var/log/nebula"
+    path: "{{ item }}"
     state: directory
     mode: '0755'
-
-- name: Copy ca.crt to host
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/ca.crt"
-    dest: /etc/nebula/certs
-    mode: '0644'
+  loop:
+    - "/var/log/nebula"
+    - "/etc/nebula"
+    - "{{ nebula_certificate_location }}"
