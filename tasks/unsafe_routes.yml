@@ -1,11 +1,12 @@
 ---
-- ansible.posix.sysctl:
+- name: Enable forwarding
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: '1'
     state: present
 
 #sudo iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -d 192.168.86.0/24 -j MASQUERADE
-- name: test
+- name: Test
   ansible.builtin.iptables:
     table: nat
     chain: POSTROUTING
