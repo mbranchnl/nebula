@@ -1,2 +1,3 @@
-- name: restart nebula 
+---
+- name: restart nebula
   ansible.builtin.include_tasks: "{{ role_path }}/handlers/restart.yml"
